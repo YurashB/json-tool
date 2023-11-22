@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -28,7 +28,6 @@ public class User {
     private String email;
 
     @NotEmpty(message = "Password cannot be empty")
-    @Min(value = 8, message = "Password must be grater than 2 characters")
     private String password;
 
     public User(String login, String email, String password) {

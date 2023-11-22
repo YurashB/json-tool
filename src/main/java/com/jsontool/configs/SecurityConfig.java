@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 @EnableWebSecurity
 @AllArgsConstructor
-@EnableMethodSecurity(securedEnabled = true)
+@EnableMethodSecurity(securedEnabled = false)
 public class SecurityConfig {
 
 }
