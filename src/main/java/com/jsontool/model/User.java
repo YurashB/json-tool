@@ -22,7 +22,8 @@ public class User {
     private Long id;
 
     @NotEmpty(message = "Email cannot be empty")
-    @Email(message = "Email must be valid")
+    @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Email must be valid")
+    @Column(unique = true)
     private String email;
 
     @NotEmpty(message = "Password cannot be empty")
