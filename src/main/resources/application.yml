@@ -14,8 +14,10 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 
-  autoconfigure:
-    exclude:
-
 server:
   port: 8081
+
+application:
+  security:
+    access-token-secret: "8AD7F3E537787AA2CA7DB2F57FF29"
+    refresh-token-secret: "C7DD82D7E842BFA43B5DA2BEBD717"
