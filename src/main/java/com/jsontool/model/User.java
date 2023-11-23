@@ -19,10 +19,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Login cannot be empty")
-    @Size(min = 3, max = 32, message = "Login must be between 3 and 32 characters")
-    private String login;
-
     @NotEmpty(message = "Email cannot be empty")
     @Email(message = "Email must be valid")
     private String email;
@@ -30,8 +26,7 @@ public class User {
     @NotEmpty(message = "Password cannot be empty")
     private String password;
 
-    public User(String login, String email, String password) {
-        this.login = login;
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
     }

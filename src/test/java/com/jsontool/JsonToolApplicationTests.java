@@ -9,7 +9,6 @@ class JsonToolApplicationTests {
 
     @Test
     void contextLoads() {
-        User user = new User("login", "email", "password");
     }
 
 }
