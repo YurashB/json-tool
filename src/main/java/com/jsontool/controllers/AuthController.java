@@ -1,7 +1,7 @@
 package com.jsontool.controllers;
 
 import com.jsontool.model.User;
-import com.jsontool.repositories.UserRepository;
+import com.jsontool.services.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class AuthController {
 
-    private final UserRepository repository;
+    private final AuthService service;
 
     @GetMapping(value = "/hello")
     public String hello() {
@@ -19,6 +19,6 @@ public class AuthController {
 
     @PostMapping(value = "/register")
     public User register(@RequestBody User user) {
-        return repository.save(user);
+        return service.save(user);
     }
 }
