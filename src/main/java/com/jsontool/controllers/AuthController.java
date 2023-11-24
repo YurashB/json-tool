@@ -1,14 +1,19 @@
 package com.jsontool.controllers;
 
+import com.jsontool.dto.UserRequestDTO;
+import com.jsontool.mappers.UserMapper;
 import com.jsontool.model.User;
 import com.jsontool.services.AuthService;
 import com.jsontool.services.Login;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
@@ -16,11 +21,14 @@ import javax.servlet.http.HttpServletResponse;
 public class AuthController {
 
     private final AuthService service;
+    private final UserMapper mapper;
 
+    // TODO return else
     @PostMapping(value = "/register")
-    public User register(@RequestBody User user) {
-        return service.save(user);
+    public String register(@Valid @RequestBody UserRequestDTO userDTO) {
+        return service.save(mapper.toUser(userDTO)).getEmail();
     }
+
 
     @PostMapping(value = "/login")
     public String login(@RequestBody User user, HttpServletResponse response) {

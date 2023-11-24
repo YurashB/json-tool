@@ -16,8 +16,15 @@ spring:
 
 server:
   port: 8081
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on_param
+    include-exception: true
 
 application:
   security:
     access-token-secret: "8AD7F3E537787AA2CA7DB2F57FF29"
     refresh-token-secret: "C7DD82D7E842BFA43B5DA2BEBD717"
+
+
