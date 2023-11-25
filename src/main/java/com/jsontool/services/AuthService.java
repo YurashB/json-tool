@@ -1,6 +1,8 @@
 package com.jsontool.services;
 
 import com.jsontool.errors.InvalidJWTTokenProvidedError;
+import com.jsontool.errors.InvalidUserCredentialsError;
+import com.jsontool.errors.UserAlreadyExistError;
 import com.jsontool.errors.UserNotFoundError;
 import com.jsontool.model.User;
 import com.jsontool.repositories.UserRepository;
@@ -20,43 +22,47 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     // TODO refactor with @Value("${app.....}")
     private final String accessTokenSecret = "8AD7F3E5377DSSDSSDSDS87AA2CA7DB2F57FF29";
-    // TODO delete refresh token
-    private final String refreshTokenSecret = "C7DD82D7EASASASAAS842BFA43B5DA2BEBD717";
+    private final String refreshTokenSecret = "84D7F3E53774SSDSS5SD587AA2CA7DD2F57FF29";
 
-    public User save(User user) {
+    public void save(User user) {
+        if (isUserAlreadyExist(user.getEmail())) {
+            throw new UserAlreadyExistError(user.getEmail());
+        }
+
         User userWithEncodedPassword = new User(user.getEmail(), passwordEncoder.encode(user.getPassword()));
-        //TODO Invalid credentials
-        return repository.save(userWithEncodedPassword);
+        User createdUser = repository.save(userWithEncodedPassword);
     }
 
     public Login login(String email, String password) {
-        String badRequestMessage = "Invalid email or password entered";
-
         User user = repository.findUserByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, badRequestMessage));
+                .orElseThrow(InvalidUserCredentialsError::new);
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            // TODO refactor to custom exception
-            new ResponseStatusException(HttpStatus.BAD_REQUEST, badRequestMessage);
+            throw new InvalidUserCredentialsError();
         }
-
-        // TODO User already exist with email
 
         return Login.of(user.getId(), accessTokenSecret, refreshTokenSecret);
     }
 
     public User getUserFromToken(String token) {
-        // TODO add status code for bad JWT or user not found
-        Long userId = 0L;
+        Long userId;
 
         try {
             userId = Token.from(token, accessTokenSecret);
-
+            return repository.findById(userId)
+                    .orElseThrow(UserNotFoundError::new);
         } catch (Exception e) {
             throw new InvalidJWTTokenProvidedError();
         }
+    }
 
-        return repository.findById(userId)
-                .orElseThrow(UserNotFoundError::new);
+    private boolean isUserAlreadyExist(String email) {
+        return repository.findUserByEmail(email).isPresent();
+    }
+
+    public Login refreshAccess(String refreshToken) {
+        Long userId = Token.from(refreshToken, refreshTokenSecret);
+
+        return Login.of(userId, accessTokenSecret, Token.of(refreshToken));
     }
 }

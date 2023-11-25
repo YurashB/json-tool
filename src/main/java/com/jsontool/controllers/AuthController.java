@@ -7,7 +7,6 @@ import com.jsontool.services.AuthService;
 import com.jsontool.services.Login;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -16,35 +15,39 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/jsontool/auth")
 @AllArgsConstructor
 public class AuthController {
 
     private final AuthService service;
     private final UserMapper mapper;
 
-    // TODO return else
     @PostMapping(value = "/register")
-    public String register(@Valid @RequestBody UserRequestDTO userDTO) {
-        return service.save(mapper.toUser(userDTO)).getEmail();
+    @ResponseStatus(HttpStatus.CREATED)
+    public String register(@Valid @RequestBody UserRequestDTO userDTO, HttpServletResponse response) {
+        service.save(mapper.toUser(userDTO));
+
+        return "Success";
     }
 
 
     @PostMapping(value = "/login")
-    public String login(@RequestBody User user, HttpServletResponse response) {
+    public String login(@RequestBody UserRequestDTO userRequestDTO, HttpServletResponse response) {
+        User user = new User(userRequestDTO.getEmail(), userRequestDTO.getPassword());
         Login login = service.login(user.getEmail(), user.getPassword());
-        // TODO Delete refresh_token and save one token only
+
+
         Cookie cookie = new Cookie("refresh_token", login.getRefreshToken().getToken());
         cookie.setMaxAge(3600);
         cookie.setHttpOnly(true);
-        cookie.setPath("/api");
+        cookie.setPath("/jsontool/auth");
 
         response.addCookie(cookie);
 
-        return service.login(user.getEmail(), user.getPassword()).getAccessToken().getToken();
+        return login.getAccessToken().getToken();
     }
 
-    @GetMapping("/user")
+    @GetMapping(value = "/user")
     public User user(HttpServletRequest request) {
         User user = (User) request.getAttribute("user");
 
@@ -60,5 +63,10 @@ public class AuthController {
         response.addCookie(cookie);
 
         return "Logout success";
+    }
+
+    @PostMapping(value = "/refresh")
+    public String refresh(@CookieValue("refresh_token") String refreshToken) {
+        return service.refreshAccess(refreshToken).getAccessToken().getToken();
     }
 }

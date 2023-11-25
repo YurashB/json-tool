@@ -27,9 +27,12 @@ public class Token {
                 .claim("user_id", userId)
                 .setIssuedAt(Date.from(issueDate))
                 .setExpiration(Date.from(issueDate.plus(validityInMinutes, ChronoUnit.MINUTES)))
-                // TODO refactor to non deprecated method
                 .signWith(SignatureAlgorithm.HS256, Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8)))
                 .compact());
+    }
+
+    public static Token of(String token) {
+        return new Token(token);
     }
 
     public static Long from(String token, String secretKey) {
