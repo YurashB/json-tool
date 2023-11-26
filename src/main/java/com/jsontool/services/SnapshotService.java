@@ -25,8 +25,8 @@ public class SnapshotService {
     private final SnapshotMapper snapshotMapper;
     private final JsonValidatorContext jsonValidatorContext = new JsonValidatorContext();
 
-    public void save(SnapshotRequestDTO snapshotRequestDTO) {
-        User user = userRepository.findById(snapshotRequestDTO.getUserId())
+    public void save(SnapshotRequestDTO snapshotRequestDTO, Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundError::new);
 
         jsonValidatorContext.setValidator(new StrictJsonValidator());
@@ -42,20 +42,33 @@ public class SnapshotService {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundError::new);
 
-        return snapshotRepository.findAllByUserId(userId);
+        return snapshotRepository.findAllByUserId(user.getId());
     }
 
-    public Snapshot findById(Long id) {
-        return snapshotRepository.findById(id)
+    public Snapshot findById(Long snapshotId, Long userId) {
+        Snapshot snapshot = snapshotRepository.findById(snapshotId)
                 .orElseThrow(SnapshotNotFoundError::new);
+
+        if (!snapshot.getUser().getId().equals(userId)) {
+            throw new SnapshotNotFoundError();
+        }
+
+        return snapshot;
     }
 
     public void update(Long id, Snapshot newSnapshot) {
 
     }
 
-    public void delete(Long id) {
-        snapshotRepository.deleteById(id);
+    public void delete(Long snapshotId, Long userId) {
+        Snapshot snapshot = snapshotRepository.findById(snapshotId)
+                .orElseThrow(SnapshotNotFoundError::new);
+
+        if (!snapshot.getUser().getId().equals(userId)) {
+            throw new SnapshotNotFoundError();
+        }
+
+        snapshotRepository.deleteById(snapshotId);
     }
 
 }

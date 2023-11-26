@@ -15,7 +15,6 @@ public class SnapshotMapper {
                 .withTitle(requestDTO.getTitle())
                 .withContent(requestDTO.getContent())
                 .withLastModified(LocalDateTime.now())
-                .withUser(user)
                 .build();
     }
 
@@ -24,7 +23,7 @@ public class SnapshotMapper {
                 .withId(snapshot.getId())
                 .withTitle(snapshot.getTitle())
                 .withContent(snapshot.getContent())
-                .withUserId(snapshot.getUser().getId())
+                .withLastModified(snapshot.getLastModified())
                 .build();
     }
 

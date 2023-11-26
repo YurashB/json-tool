@@ -16,7 +16,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authorizationInterceptor)
-                .addPathPatterns("/jsontool/auth/user");
+                .addPathPatterns("/jsontool/auth/user")
+                .addPathPatterns("/jsontool/snapshots")
+                .addPathPatterns("/jsontool/snapshots/**");
     }
 
     @Override

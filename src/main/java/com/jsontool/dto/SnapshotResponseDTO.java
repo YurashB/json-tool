@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,14 +16,14 @@ public class SnapshotResponseDTO {
     private Long id;
     private String title;
     private String content;
-    private Long userId;
+    private LocalDateTime lastModified;
 
 
     public static final class SnapshotResponseDTOBuilder {
         private Long id;
         private String title;
         private String content;
-        private Long userId;
+        private LocalDateTime lastModified;
 
         private SnapshotResponseDTOBuilder() {
         }
@@ -46,13 +47,13 @@ public class SnapshotResponseDTO {
             return this;
         }
 
-        public SnapshotResponseDTOBuilder withUserId(Long userId) {
-            this.userId = userId;
+        public SnapshotResponseDTOBuilder withLastModified(LocalDateTime lastModified) {
+            this.lastModified = lastModified;
             return this;
         }
 
         public SnapshotResponseDTO build() {
-            return new SnapshotResponseDTO(id, title, content, userId);
+            return new SnapshotResponseDTO(id, title, content, lastModified);
         }
     }
 }

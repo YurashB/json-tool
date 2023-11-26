@@ -19,6 +19,4 @@ public class SnapshotRequestDTO {
     private String title;
     @NotBlank(message = "Content cannot be empty")
     private String content;
-    @NotNull(message = "User id cannot be empty")
-    private Long userId;
 }
