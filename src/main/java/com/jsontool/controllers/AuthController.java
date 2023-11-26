@@ -22,17 +22,19 @@ public class AuthController {
     private final AuthService service;
     private final UserMapper mapper;
 
+    record RegisterResponse(String message){}
     @PostMapping(value = "/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public String register(@Valid @RequestBody UserRequestDTO userDTO, HttpServletResponse response) {
+    public RegisterResponse register(@Valid @RequestBody UserRequestDTO userDTO, HttpServletResponse response) {
         service.save(mapper.toUser(userDTO));
 
-        return "Success";
+        return new RegisterResponse("Success");
     }
 
 
+    record LoginResponse(String accessToken){}
     @PostMapping(value = "/login")
-    public String login(@RequestBody UserRequestDTO userRequestDTO, HttpServletResponse response) {
+    public LoginResponse login(@RequestBody UserRequestDTO userRequestDTO, HttpServletResponse response) {
         User user = new User(userRequestDTO.getEmail(), userRequestDTO.getPassword());
         Login login = service.login(user.getEmail(), user.getPassword());
 
@@ -44,9 +46,10 @@ public class AuthController {
 
         response.addCookie(cookie);
 
-        return login.getAccessToken().getToken();
+        return new LoginResponse(login.getAccessToken().getToken());
     }
 
+    //TODO delete method for test
     @GetMapping(value = "/user")
     public User user(HttpServletRequest request) {
         User user = (User) request.getAttribute("user");
@@ -54,19 +57,21 @@ public class AuthController {
         return user;
     }
 
+    record LogoutResponse(String message){}
     @PostMapping("/logout")
-    public String logout(HttpServletResponse response) {
+    public LogoutResponse logout(HttpServletResponse response) {
         Cookie cookie = new Cookie("refresh_token", null);
         cookie.setMaxAge(0);
         cookie.setHttpOnly(true);
 
         response.addCookie(cookie);
 
-        return "Logout success";
+        return new LogoutResponse("Logout succesfully");
     }
 
+    record RefreshResponse(String accessToken){}
     @PostMapping(value = "/refresh")
-    public String refresh(@CookieValue("refresh_token") String refreshToken) {
-        return service.refreshAccess(refreshToken).getAccessToken().getToken();
+    public RefreshResponse refresh(@CookieValue("refresh_token") String refreshToken) {
+        return new RefreshResponse(service.refreshAccess(refreshToken).getAccessToken().getToken());
     }
 }

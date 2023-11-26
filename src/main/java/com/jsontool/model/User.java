@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -27,6 +28,9 @@ public class User {
 
     @NotEmpty(message = "Password cannot be empty")
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Snapshot> snapshots;
 
     public User(String email, String password) {
         this.email = email;
