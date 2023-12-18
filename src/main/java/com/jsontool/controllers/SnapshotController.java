@@ -3,7 +3,6 @@ package com.jsontool.controllers;
 import com.jsontool.dto.SnapshotRequestDTO;
 import com.jsontool.dto.SnapshotResponseDTO;
 import com.jsontool.mappers.SnapshotMapper;
-import com.jsontool.model.Snapshot;
 import com.jsontool.model.User;
 import com.jsontool.services.SnapshotService;
 import lombok.AllArgsConstructor;
@@ -45,10 +44,7 @@ public class SnapshotController {
         return mapper.toResponseDTO(service.findById(id, user.getId()));
     }
 
-    public void update() {
-    }
-
-    @DeleteMapping("/{id}")
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable Long id, HttpServletRequest request) {
         User user = (User) request.getAttribute("user");
 

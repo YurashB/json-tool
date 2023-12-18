@@ -14,7 +14,8 @@ import com.jsontool.utils.validators.json.StrictJsonValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -38,11 +39,13 @@ public class SnapshotService {
         snapshotRepository.save(snapshot);
     }
 
-    public Set<Snapshot> getAllByUserId(Long userId) {
+    public List<Snapshot> getAllByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundError::new);
 
-        return snapshotRepository.findAllByUserId(user.getId());
+        List<Snapshot> snapshots = snapshotRepository.findAllByUserId(user.getId()).stream()
+                .toList();
+        return snapshots.stream().sorted(Comparator.comparing(Snapshot::getLastModified).reversed()).toList();
     }
 
     public Snapshot findById(Long snapshotId, Long userId) {
@@ -54,10 +57,6 @@ public class SnapshotService {
         }
 
         return snapshot;
-    }
-
-    public void update(Long id, Snapshot newSnapshot) {
-
     }
 
     public void delete(Long snapshotId, Long userId) {

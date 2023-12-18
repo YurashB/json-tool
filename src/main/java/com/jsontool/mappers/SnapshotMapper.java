@@ -15,6 +15,7 @@ public class SnapshotMapper {
                 .withTitle(requestDTO.getTitle())
                 .withContent(requestDTO.getContent())
                 .withLastModified(LocalDateTime.now())
+                .withUser(user)
                 .build();
     }
 

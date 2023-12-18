@@ -15,7 +15,7 @@ public class Login {
 
     public static Login of(Long userId, String accessSecret, String refreshSecret) {
         return new Login(
-                Token.of(userId, 5L, accessSecret),
+                Token.of(userId, 30L, accessSecret),
                 Token.of(userId, 1440L, refreshSecret)
 
         );

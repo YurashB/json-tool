@@ -49,7 +49,6 @@ public class AuthController {
         return new LoginResponse(login.getAccessToken().getToken());
     }
 
-    //TODO delete method for test
     @GetMapping(value = "/user")
     public User user(HttpServletRequest request) {
         User user = (User) request.getAttribute("user");
@@ -65,6 +64,7 @@ public class AuthController {
         cookie.setHttpOnly(true);
 
         response.addCookie(cookie);
+        System.out.println(cookie.getValue());
 
         return new LogoutResponse("Logout succesfully");
     }
