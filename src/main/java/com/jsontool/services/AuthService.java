@@ -20,7 +20,6 @@ public class AuthService {
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
-    // TODO refactor with @Value("${app.....}")
     private final String accessTokenSecret = "8AD7F3E5377DSSDSSDSDS87AA2CA7DB2F57FF29";
     private final String refreshTokenSecret = "84D7F3E53774SSDSS5SD587AA2CA7DD2F57FF29";
 

@@ -16,7 +16,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // TODO change authorized and unauthorized paths
         http
                 .cors().and()
                 .csrf().disable()

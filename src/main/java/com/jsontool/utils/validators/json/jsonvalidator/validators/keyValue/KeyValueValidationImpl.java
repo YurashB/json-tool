@@ -1,6 +1,6 @@
 package com.jsontool.utils.validators.json.jsonvalidator.validators.keyValue;
 
-import com.jsontool.utils.validators.json.jsonvalidator.exceptions.JSONException;
+import com.jsontool.utils.validators.json.jsonvalidator.exceptions.JSONValidationException;
 import com.jsontool.utils.validators.json.jsonvalidator.validators.values.ValueValidatorImpl;
 import com.jsontool.utils.validators.json.jsonvalidator.validators.values.ValueValidatorInterface;
 
@@ -16,8 +16,7 @@ public class KeyValueValidationImpl implements KeyValueValidatorInterface {
             i++;
 
             if (json[i++] != ':') {
-                throw new JSONException(
-                        String.format("Expected a ':' after key at %s [character %s line %s]", i - 1, i, 0));
+                throw new JSONValidationException("Unexpected symbol at key", i);
             }
 
             ValueValidatorInterface valueValidator = new ValueValidatorImpl(this);
@@ -29,13 +28,11 @@ public class KeyValueValidationImpl implements KeyValueValidatorInterface {
             } else if (json[i] == '}') { // end of json object
                 return i;
             } else {
-                throw new JSONException(
-                        String.format("Expected a ',' after key at %s [character %s line %s]", i - 1, i, 0));
+                throw new JSONValidationException("Unexpected symbol after key", i);
             }
 
         } else {
-            throw new JSONException(
-                    String.format("Expected a '\"' after key at %s [character %s line %s]", i - 1, i, 0));
+            throw new JSONValidationException("Unexpected symbol at key", i);
         }
     }
 }
